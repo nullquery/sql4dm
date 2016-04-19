@@ -30,22 +30,14 @@
 
 /sql4dm/SqliteDatabaseConnection/proc/GetArgList(query, list/arguments)
 	var/list/L = new/list()
-	var/pos1,pos2=1,value,i
+	var/regex/p = regex("\\$(\\d+)")
 
-	do
-		pos1      = findtext(query, "$", pos2)
-
-		if (pos1 > 0)
-			pos2  = findtext(query, " ", pos1)
-			value = copytext(query, pos1 + 1, pos2)
-			i     = text2num(value)
-
-			if (arguments.len > i && "[value]" == "[i]")
-				query = text("[][][]", copytext(query, 1, pos1), "?", (pos2 == 0 || length(query) > pos2 + 1 ? copytext(query, pos2) : ""))
-				L.Add(arguments[i + 1])
-	while (pos1 > 0)
+	while (p.Find(query))
+		query = p.Replace(query, "?")
+		L.Add(arguments[text2num(p.group[1]) + 1])
 
 	L.Insert(1, query)
+
 	return L
 
 /sql4dm/SqliteDatabaseConnection/Execute(query, ...)
