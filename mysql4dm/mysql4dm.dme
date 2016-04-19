@@ -1,0 +1,15 @@
+// BEGIN_INTERNALS
+// END_INTERNALS
+// BEGIN_FILE_DIR
+#define FILE_DIR .
+// END_FILE_DIR
+// BEGIN_PREFERENCES
+#define DEBUG
+// END_PREFERENCES
+// BEGIN_INCLUDE
+#include <nullquery\sql4dm\sql4dm.dme>
+#include "mysql4dm.dm"
+#ifdef __MAIN__ // BEGIN_DEMO
+#include "demo.dm"
+#endif          // END_DEMO
+// END_INCLUDE
