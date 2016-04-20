@@ -1,0 +1,12 @@
+// BEGIN_INTERNALS
+// END_INTERNALS
+// BEGIN_FILE_DIR
+#define FILE_DIR .
+// END_FILE_DIR
+// BEGIN_PREFERENCES
+// END_PREFERENCES
+// BEGIN_INCLUDE
+#include <nullquery\sql4dm\sql4dm.dme>
+#include "nq_commons.dm"
+#include "nq_utility.dm"
+// END_INCLUDE
