@@ -1,0 +1,14 @@
+// BEGIN_INTERNALS
+// END_INTERNALS
+// BEGIN_FILE_DIR
+#define FILE_DIR .
+// END_FILE_DIR
+// BEGIN_PREFERENCES
+// END_PREFERENCES
+// BEGIN_INCLUDE
+#include <nullquery\dbchangelog\dbchangelog.dme>
+#include <nullquery\mysql4dm\mysql4dm.dme>
+#include <nullquery\pgsql4dm\pgsql4dm.dme>
+#include <nullquery\sqlite4dm\sqlite4dm.dme>
+#include "sql4dm_demo.dm"
+// END_INCLUDE
