@@ -1,6 +1,9 @@
 #ifndef SRC_WIN32_H_
 #define SRC_WIN32_H_
 
+void intToChar(int a, char* b, int size);
+void doubleToChar(double a, char* b, int size);
+
 #ifdef _WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#define _WIN32_WINNT 0x501
