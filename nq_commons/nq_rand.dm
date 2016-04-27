@@ -1,6 +1,8 @@
 /*
-    nq_utility: Utility / misc. operations
+    nq_rand: Random number generator
     Copyright (C) 2016  NullQuery (http://www.byond.com/members/NullQuery)
+
+    This program is part of the nq_utility library.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -16,22 +18,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Override these to provide alternative locations to the shared library.
+/nq_rand/var/global/last_id = 0
+/nq_rand/var/id
+/nq_rand/var/max_decimals = 5
 
-#ifndef LIBNQUTILITY_DLL_WIN32
-#define LIBNQUTILITY_DLL_WIN32 "./libnqutility.dll"
-#endif
+/nq_rand/New(seed)
+	. = ..()
+	id = ++last_id
+	if (seed) Seed(seed)
 
-#ifndef LIBNQUTILITY_DLL_UNIX
-#define LIBNQUTILITY_DLL_UNIX "./libnqutility.so"
-#endif
+/nq_rand/Del()
+	nq_utility.CallProc("destroyRandomGenerator", "[id]")
+	return ..()
 
-/var/nq_utility/nq_utility = new
+/nq_rand/proc/Seed(seed)
+	return nq_utility.CallProc("setRandSeed", "[id]", "[seed]") == "0"
 
-/nq_utility/proc/CallProc(function, ...)
-	var/list/L										= args.Copy(2)
+/nq_rand/proc/MaxDecimals(max_decimals)
+	src.max_decimals = max_decimals
 
-	return call(world.system_type == MS_WINDOWS ? LIBNQUTILITY_DLL_WIN32 : LIBNQUTILITY_DLL_UNIX, function)(arglist(L))
+/nq_rand/proc/Random(a, b)
+	. = nq_utility.CallProc("getRandomNumber", "[id]", "[a]", "[b]", "[max_decimals]")
 
-/nq_utility/proc/GenerateUniqueID()
-	return CallProc("getUniqueID")
+	if (. == null || . == "")
+		CRASH("Unable to generate next random number!")
+	else
+		return text2num("[.]")

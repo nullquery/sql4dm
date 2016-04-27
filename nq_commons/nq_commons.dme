@@ -4,9 +4,11 @@
 #define FILE_DIR .
 // END_FILE_DIR
 // BEGIN_PREFERENCES
+#define DEBUG
 // END_PREFERENCES
 // BEGIN_INCLUDE
 #include <nullquery\sql4dm\sql4dm.dme>
 #include "nq_commons.dm"
+#include "nq_rand.dm"
 #include "nq_utility.dm"
 // END_INCLUDE
