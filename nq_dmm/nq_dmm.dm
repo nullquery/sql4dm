@@ -187,10 +187,7 @@ var/nq_dmm/nq_dmm = new
 
 /nq_dmm/proc/LoadMapString(str, x_offset = 0, y_offset = 0, z_offset = 0)
 	var/regex/r
-	var/next2
 	var/pos
-	var/temp1
-	var/temp2
 
 	// Remove single-line comments.
 	r                                        = new("^\\/\\/.*\\r?\\n?", "igm")
