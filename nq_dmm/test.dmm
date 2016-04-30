@@ -1,0 +1,33 @@
+"a" = (/turf/black,/area/a)
+"b" = (/turf/white,/area/a)
+"c" = (/turf/black{desc = ""; icon_state = "red"; name = "\"red\" tile, as you can see"; tag = "test"; testvar = new /obj{icon_state = "red"}(1234)},/area/a)
+"d" = (/turf/white,/area)
+"e" = (/turf/black,/area)
+"f" = (/obj/tomato,/turf/black,/area)
+"g" = (/turf/black,/area/b)
+"h" = (/turf/white,/area/b)
+"i" = (/obj/tomato,/turf/white,/area)
+"j" = (/turf/white,/turf/black{icon_state = "round"},/area)
+
+(1,1,1) = {"
+abababababababababab
+babababababababababa
+abababababababababab
+babababababababababa
+abababababababababab
+babababababababababa
+abababababababababab
+babababababababababa
+abababababababababab
+bababcbababababababa
+abababababababababab
+dedfdedghghghghghghg
+edededehghghghghghgh
+dededeighghghghghghg
+edededehghghghghghgh
+dedededghghghghghghg
+ededejehghghghghghgh
+dedededghghghghghghg
+edededehghghghghghgh
+dedededghghghghghghg
+"}
