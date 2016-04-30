@@ -151,16 +151,24 @@ var/nq_commons/CO = new
 	Usage: CO.IndexOf(text, str)
 	Usage: CO.IndexOf(text, str, case_sensitive)
 	Usage: CO.IndexOf(text, str, case_sensitive, start)
+	Usage: CO.IndexOf(text, str, case_sensitive, start, reverse)
 
 	Convenience function that wraps the use of findtext and findtextEx.
 */
-/nq_commons/proc/IndexOf(text, str, case_sensitive = 0, start = 1)
+/nq_commons/proc/IndexOf(text, str, case_sensitive = 0, start = 1, reverse = 0)
 	var/pos
 
-	if (case_sensitive)  pos = findtextEx(text, str, start)
-	else                 pos = findtext(text, str, start)
+	if (reverse)
+		if (case_sensitive)  pos = findlasttextEx(text, str, start)
+		else                 pos = findlasttext(text, str, start)
+	else
+		if (case_sensitive)  pos = findtextEx(text, str, start)
+		else                 pos = findtext(text, str, start)
 
 	return pos
+
+/nq_commons/proc/LastIndexOf(text, str, case_sensitive = 0, start = 0)
+	return IndexOf(text, str, case_sensitive, start, 1)
 
 /*
 	Usage: CO.ToProperCase(text)
@@ -215,9 +223,9 @@ var/nq_commons/CO = new
 	quite useful when parsing text.
 */
 /nq_commons/proc/Left(text, str, case_sensitive = 0)            return _left(text, CO.IndexOf(text, str, case_sensitive))
-/nq_commons/proc/Right(text, str, case_sensitive = 0)           return _right(text, CO.IndexOf(text, str, case_sensitive))
-/nq_commons/proc/BackwardsLeft(text, str, case_sensitive = 0)   return _left(text, length(text) - CO.IndexOf(CO.ReverseText(text), str, case_sensitive) + 1)
-/nq_commons/proc/BackwardsRight(text, str, case_sensitive = 0)  return _right(text, length(text) - CO.IndexOf(CO.ReverseText(text), str, case_sensitive) + 1)
+/nq_commons/proc/Right(text, str, case_sensitive = 0)           return _right(text, CO.IndexOf(text, str, case_sensitive) + length(str) - 1)
+/nq_commons/proc/BackwardsLeft(text, str, case_sensitive = 0)   return _left(text, CO.LastIndexOf(text, str, case_sensitive))
+/nq_commons/proc/BackwardsRight(text, str, case_sensitive = 0)  return _right(text, CO.LastIndexOf(text, str, case_sensitive) + length(str) - 1)
 
 /nq_commons/var/const/NOMINATIVE = 1
 /nq_commons/var/const/OBLIQUE = 2
@@ -290,3 +298,81 @@ var/nq_commons/CO = new
 	if (dir & WEST)  . = . + "west"
 
 	return .
+
+//Returns a string with reserved characters and spaces before the first letter removed
+/nq_commons/proc/TrimLeft(text)
+	for (var/i = 1 to length(text))
+		if (text2ascii(text, i) > 32)
+			return copytext(text, i)
+	return ""
+
+//Returns a string with reserved characters and spaces after the last letter removed
+/nq_commons/proc/TrimRight(text)
+	for (var/i = length(text), i > 0, i--)
+		if (text2ascii(text, i) > 32)
+			return copytext(text, 1, i + 1)
+
+	return ""
+
+//Returns a string with reserved characters and spaces before the first word and after the last word removed.
+/nq_commons/proc/Trim(text, max_length)
+	if(max_length) text = copytext(text, 1, max_length)
+	return TrimLeft(TrimRight(text))
+
+/nq_commons/var/list/start_chars      = list(text2ascii("("), text2ascii("{"), text2ascii("\""), text2ascii("\["), text2ascii("<"))
+/nq_commons/var/list/end_chars        = list(text2ascii(")"), text2ascii("}"), text2ascii("\""), text2ascii("\]"), text2ascii(">"))
+/nq_commons/var/list/whitespace_chars = list(text2ascii(" "), text2ascii("\t"), text2ascii("\n"))
+/nq_commons/var/escape_char           = text2ascii("\\")
+
+/*
+	Usage: CO.IndexAfterGroup(text)
+	Usage: CO.IndexAfterGroup(text, start)
+
+	Returns the position after any "group" characters such as parenthesis, braces, brackets, etc.
+	Specify the starting position before the character that you want to "skip over".
+*/
+/nq_commons/proc/IndexAfterGroup(text, start = 1)
+	var/char
+
+	var/list/levels              = new/list()
+	var/escaped                  = 0
+
+	for (var/i = start to length(text))
+		char                     = text2ascii(text, i)
+
+		if (char in whitespace_chars) continue
+		if (char == escape_char) escaped = 1
+		else if (escaped)        escaped = 0
+		else if ((char in end_chars) && levels.len > 0 && levels[levels.len] == char)
+			levels.Remove(char)
+		else if (char in start_chars)
+			levels.Add(end_chars[start_chars.Find(char)])
+
+		if (levels.len == 0)     return i
+
+	return 0
+
+/*
+	Usage: CO.IndexAfterGroupChar(text, needle)
+	Usage: CO.IndexAfterGroupChar(text, needle, start)
+
+	Finds the first occurrance of [needle] in [text], skipping over "group" characters.
+	See also: CO.IndexAfterGroup
+*/
+/nq_commons/proc/IndexAfterGroupChar(text, needle, start = 1)
+	if (istext(needle))          needle = text2ascii(needle)
+	var/char
+	var/escaped                  = 0
+
+	for (var/i = start, i <= length(text), i++)
+		char                          = text2ascii(text, i)
+
+		if (char == needle)           return i + 1
+		else if (char == escape_char) escaped = 1
+		else if (escaped)             escaped = 0
+		else if (char in start_chars)
+			i                         = IndexAfterGroup(text, i)
+
+			if (i == 0)               return 0
+
+	return 0
