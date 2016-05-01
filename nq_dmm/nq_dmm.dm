@@ -387,19 +387,3 @@ var/nq_dmm/nq_dmm = new
 
 	if (fexists(file))                       fdel(file)
 	text2file(., file)
-
-/*
-y = maxy
-			for (var/row in rows)
-				pos = 1
-				for (var/x = x1 to maxx)
-					group                    = groups[copytext(row, pos, pos + key_length)]
-
-					if (group)
-						for (var/nq_dmm_object/obj in group)
-							obj.Instantiate(locate(x, y, z))
-
-					pos                      = pos + key_length
-
-				y--
-				*/
