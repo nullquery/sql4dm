@@ -10,6 +10,5 @@
 #include "nq_dmm.dm"
 #ifdef __MAIN__ // BEGIN_DEMO
 #include "demo.dm"
-#include "blank.dmm"
 #endif          // END_DEMO
 // END_INCLUDE
