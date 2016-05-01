@@ -339,9 +339,7 @@ var/nq_dmm/nq_dmm = new
 
 		if (!groups[key])                    groups[key] = group
 
-		//if (!(key in turfs))                 turfs[key] = new/list()
 		turfs[T] = key
-		//turfs[key] += T
 
 	var/id_length                            = 52
 	while (id_length < groups.len)           id_length = id_length * 52
@@ -352,7 +350,6 @@ var/nq_dmm/nq_dmm = new
 	var/id                                   = CO.Repeat("a", id_length)
 	var/first
 
-	world << "length = [groups.len]"
 	for (key in groups)
 		group                                = groups[key]
 
