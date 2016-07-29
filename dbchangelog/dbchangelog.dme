@@ -6,9 +6,6 @@
 // BEGIN_PREFERENCES
 // END_PREFERENCES
 // BEGIN_INCLUDE
-#include <deadron\test\Test.dme>
-#include <deadron\texthandling\TextHandling.dme>
-#include <deadron\xml\XML.dme>
 #include <nullquery\sql4dm\sql4dm.dme>
 #include "dbchangelog.dm"
 // END_INCLUDE

@@ -29,6 +29,7 @@
 #define LIBPGSQL4DM_TRACKER_URL "http://www.byond.com/forum/?forum=146927"
 
 /sql4dm/PgsqlDatabaseConnection/parent_type = /sql4dm/DatabaseConnection
+/sql4dm/PgsqlDatabaseConnection/dbtype = "pgsql"
 
 /sql4dm/PgsqlDatabaseConnection/proc/CallProc(function, ...)
 	var/list/L										= args.Copy(2)

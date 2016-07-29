@@ -82,8 +82,9 @@
 				sql                                 = ""
 
 				for (var/XML/Element/changeSetAction in line.ChildElements())
-					if (changeSetAction.Tag() == "sql")
-						sql                         = "[sql][changeSetAction.Text()];"
+					if (!changeSetAction.Attribute("dbtype") || (src.connection.dbtype in splittext(lowertext(changeSetAction.Attribute("dbtype")), ",")))
+						if (changeSetAction.Tag() == "sql")
+							sql                     = "[sql][changeSetAction.Text()];"
 
 				hash                                = md5("[sql]")
 

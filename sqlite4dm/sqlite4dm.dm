@@ -19,6 +19,7 @@
 // Override these to provide alternative locations to the shared library.
 
 /sql4dm/SqliteDatabaseConnection/parent_type = /sql4dm/DatabaseConnection
+/sql4dm/SqliteDatabaseConnection/dbtype = "sqlite"
 
 /sql4dm/SqliteDatabaseConnection/var/database/db
 

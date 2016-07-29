@@ -287,6 +287,16 @@ var/nq_commons/CO = new
 	return result
 
 /*
+	Usage: CO.Repeat(str, amount)
+
+	Repeats [str] for [amount] times.
+*/
+/nq_commons/proc/Repeat(str, amount)
+	. = ""
+
+	for (var/i = 1 to amount) . = "[.][str]"
+
+/*
 	Usage: CO.DirectionToString(dir)
 
 	Returns the name of the direction passed.

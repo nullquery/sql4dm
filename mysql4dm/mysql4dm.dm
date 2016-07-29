@@ -29,6 +29,7 @@
 #define LIBMYSQL4DM_TRACKER_URL "http://www.byond.com/forum/?forum=148855"
 
 /sql4dm/MysqlDatabaseConnection/parent_type = /sql4dm/DatabaseConnection
+/sql4dm/MysqlDatabaseConnection/dbtype = "mysql"
 
 /sql4dm/MysqlDatabaseConnection/proc/CallProc(function, ...)
 	var/list/L										= args.Copy(2)

@@ -23,6 +23,7 @@
 /sql4dm/DatabaseConnection/var/username
 /sql4dm/DatabaseConnection/var/password
 /sql4dm/DatabaseConnection/var/database
+/sql4dm/DatabaseConnection/var/dbtype
 
 /sql4dm/DatabaseConnection/New(hostname, port, username, password, database)
 	src.hostname = hostname

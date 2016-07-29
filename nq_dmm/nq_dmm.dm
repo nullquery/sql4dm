@@ -248,14 +248,16 @@ var/nq_dmm/nq_dmm = new
 
 				y--
 
+#define VAR_CHECK if (V != "transform" /* transform var is unsupported */ && V != "overlays" /* unsupported - internal format */ \
+					&& V != "underlays" /* unsupported - internal format */ \
+					&& (istype(V, /atom/movable) || V != "contents") && issaved(A.vars[V]) && A.vars[V] != initial(A.vars[V]))
+
 /nq_dmm/proc/GetNqqObject(datum/A)
 	///nq_dmm_object(A.type, list/variables, null, hash)
 	var/list/variables = new/list()
 
 	for (var/V in A.vars)
-		if (V != "transform" /* transform var is unsupported */ && V != "overlays" /* unsupported - internal format */ \
-			&& V != "underlays" /* unsupported - internal format */ \
-			&& (istype(V, /atom/movable) || V != "contents") && issaved(A.vars[V]) && A.vars[V] != initial(A.vars[V]))
+		VAR_CHECK
 
 			if (istype(A.vars[V], /datum))
 				variables[V] = GetNqqObject(A.vars[V])
@@ -325,21 +327,68 @@ var/nq_dmm/nq_dmm = new
 
 		first                                = 0
 
+turf/var/tmp/nq_dmm_map_key
+
+/nq_dmm/proc/IsEqual(datum/A, datum/B)
+	.                                        =(A.type == B.type)
+
+	if (.)
+		for (var/V in A.vars)
+			VAR_CHECK
+				if (istype(A.vars[V], /datum) && istype(B.vars[V], /datum))
+					if (!IsEqual(A.vars[V], B.vars[V]))
+						. = 0
+						break
+				else if (A.vars[V] != B.vars[V])
+					. = 0
+					break
+
+	if (. && isturf(A))
+		var/turf/T1 = A
+		var/turf/T2 = B
+
+		.                                    = IsEqual(T1.loc, T2.loc)
+
+		if (.)
+			var/found                        = 0
+			var/list/L
+
+			for (var/atom/movable/M1 in A)
+				for (var/atom/movable/M2 in B)
+					if (!L || !(M2 in L))
+						if (IsEqual(M1, M2))
+							found = 1
+							break
+
+						if (!L)              L = new/list()
+						L.Add(M2)
+
+				if (found)                   break
+
+			.                                = found
+
 /nq_dmm/proc/SaveMap(file, turf/lb, turf/ub)
 	var/list/groups                          = new/list()
-	var/list/turfs                           = new/list()
+	var/list/turfs                           = block(lb, ub)
 	var/list/group
 	var/key
 
-	for (var/turf/T in block(lb, ub))
-		group                                = GetNqqObjects(T)
-		key                                  = ""
+	var/turf/previous_turf
 
-		for (var/nq_dmm_object/obj in group) key = ("[key]_[obj.path]_[json_encode(obj.variables)]")
+	for (var/turf/T in turfs)
+		if (previous_turf && IsEqual(T, previous_turf))
+			T.nq_dmm_map_key                 = previous_turf.nq_dmm_map_key
+		else
+			group                            = GetNqqObjects(T)
+			key                              = ""
 
-		if (!groups[key])                    groups[key] = group
+			for (var/nq_dmm_object/obj in group) key = ("[key]_[obj.path]_[json_encode(obj.variables)]")
 
-		turfs[T] = key
+			if (!groups[key])                groups[key] = group
+
+			T.nq_dmm_map_key                 = key
+
+		previous_turf                        = T
 
 	var/id_length                            = 52
 	while (id_length < groups.len)           id_length = id_length * 52
@@ -349,12 +398,11 @@ var/nq_dmm/nq_dmm = new
 
 	var/id                                   = CO.Repeat("a", id_length)
 	var/first
-
 	for (key in groups)
 		group                                = groups[key]
 
 		for (var/turf/T in turfs)
-			if (turfs[T] == key)             turfs[T] = id
+			if (T.nq_dmm_map_key == key)     T.nq_dmm_map_key = id
 
 		. = "[.]\n\"[id]\" = ("
 
@@ -381,9 +429,11 @@ var/nq_dmm/nq_dmm = new
 		. = "[.]\n"
 		for (var/x = lb.x to ub.x)
 			T                                = locate(x, y, lb.z)
-			. = "[.][turfs[T]]"
+			. = "[.][T.nq_dmm_map_key]"
 
 	. = "[.]\n\"}\n"
 
 	if (fexists(file))                       fdel(file)
 	text2file(., file)
+
+#undef VAR_CHECK
